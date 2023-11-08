@@ -1,0 +1,10 @@
+# folders
+node_modules/
+dist/
+build/
+
+# files
+.env
+.DS_Store
+emails.db
+*.db
