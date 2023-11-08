@@ -1,6 +1,6 @@
 {
   "name": "emailnator",
-  "version": "1.0.2",
+  "version": "1.0.4 ",
   "description": "generate gmail email with emailnator.com",
   "main": "index.js",
   "bin": {
@@ -21,11 +21,11 @@
   "author": "ethicalhcb",
   "license": "MIT",
   "dependencies": {
+    "@npmcli/fs": "^3.1.0",
     "commander": "^11.1.0",
     "figlet": "^1.7.0",
     "ora": "^7.0.1",
     "puppeteer": "^21.5.0",
-    "sqlite3": "^5.1.6",
-    "@npmcli/fs": "3.1.0"
+    "sqlite3": "^5.1.6"
   }
 }

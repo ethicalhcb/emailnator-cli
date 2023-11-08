@@ -11,7 +11,7 @@ import figlet from "figlet";
 
 const program = new Command();
 program.name("emailnator");
-program.version("1.0.0");
+program.version("1.0.4");
 program.description("A CLI to generate email addresses and read emails");
 
 console.log("Emailnator Unofficial CLI " + program.version() + "\n");
