@@ -1,5 +1,7 @@
 # Emailnator Unofficial CLI
 
+[https://www.npmjs.com/package/emailnator](https://www.npmjs.com/package/emailnator)
+
 Emailnator Unofficial CLI is a command-line interface for generating email addresses and reading emails.
 
 >**Please note that I am not responsible for the usage of this program. Use it responsibly and ethically.**
