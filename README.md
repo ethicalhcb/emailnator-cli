@@ -10,8 +10,15 @@ Emailnator Unofficial CLI is a command-line interface for generating email addre
 
 To install Emailnator Unofficial CLI, you need to have Node.js and npm installed on your machine. Then, you can install Emailnator Unofficial CLI using npm:
 
+with npm
 ```bash
-npm install -g emailnator
+sudo npm install -g emailnator
+```
+with git clone
+```bash
+git clone https://github.com/ethicalhcb/emailnator-cli.git
+cd emailnator-cli
+sudo npm install -g .
 ```
 
 ## Usage
