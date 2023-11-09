@@ -21,13 +21,16 @@ fi
 VERSION=$1
 
 # Check if the $VERSION is > to in .version && package.json
-if [[ "$(jq -r '.version' package.json)" < "$VERSION" ]]; then
+if [[ "$(cat .version)" < "$VERSION" ]]; then
     # Ask for confirmation before modifying files
     read -p "Update the current version to $VERSION?. Do you want to continue? (y/n) " choice
     case "$choice" in
         y|Y )
             # Modify the package.json file
             jq '.version = "'$VERSION'"' package.json > temp.json && mv temp.json package.json
+
+            # Modify the .version file
+            echo $VERSION > .version
 
             # Display modifications
             echo "Version changed to $VERSION in package.json and .version"

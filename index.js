@@ -12,7 +12,8 @@ import fs from "fs";
 
 const program = new Command();
 program.name("emailnator");
-program.version(JSON.parse(fs.readFileSync('./package.json', 'utf8')).version);
+const version = fs.readFileSync("./.version", "utf8").trim();
+program.version(version);
 program.description("A CLI to generate email addresses and read emails");
 console.log("Emailnator Unofficial CLI " + program.version() + "\n");
 
@@ -84,15 +85,15 @@ program
   .action(() => {
     const spinner = ora("Loading email addresses...").start();
     listEmailsToDatabase()
-    .then((value) => {
+      .then((value) => {
         const emails = value;
         if (emails.length === 0) {
-            spinner.fail("No email addresses generated yet.");
-            return;
+          spinner.fail("No email addresses generated yet.");
+          return;
         }
         const emailList = emails.map((email) => email.email);
         spinner.succeed(`Email addresses list :\n${emailList.join("\n")}`);
-    })
+      })
       .catch((err) => {
         spinner.fail(err.message);
       });
