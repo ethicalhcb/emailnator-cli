@@ -8,12 +8,12 @@ import { inbox } from "./bin/inbox.js";
 import { message } from "./bin/message.js";
 import { clearEmailsToDatabase } from "./bin/clear.js";
 import figlet from "figlet";
+import fs from "fs";
 
 const program = new Command();
 program.name("emailnator");
-program.version("1.0.4");
+program.version(JSON.parse(fs.readFileSync('./package.json', 'utf8')).version);
 program.description("A CLI to generate email addresses and read emails");
-
 console.log("Emailnator Unofficial CLI " + program.version() + "\n");
 
 program.on("--help", () => {
