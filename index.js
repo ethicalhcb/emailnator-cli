@@ -10,9 +10,17 @@ import { clearEmailsToDatabase } from "./bin/clear.js";
 import figlet from "figlet";
 import fs from "fs";
 
+// get dirname and filename for version
+import { fileURLToPath } from "url";
+import path from "path";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const program = new Command();
 program.name("emailnator");
-const version = fs.readFileSync("./.version", "utf8").trim();
+const versionFilePath = path.resolve(__dirname, ".version");
+const version = fs.readFileSync(versionFilePath, "utf8").trim();
 program.version(version);
 program.description("A CLI to generate email addresses and read emails");
 console.log("Emailnator Unofficial CLI " + program.version() + "\n");
