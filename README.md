@@ -1,7 +1,7 @@
 # Emailnator Unofficial CLI
 
 <p align="center">
-    <img src="logo.png" alt="Logo" width="300">
+    <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="300">
 </p>
 
 
@@ -11,13 +11,15 @@ Emailnator Unofficial CLI is a command-line interface for generating email addre
 
 ## 📦 Installation
 
-To install Emailnator Unofficial CLI, you need to have Node.js and npm installed on your machine. Then, you can install Emailnator Unofficial CLI using npm:
+To install, you need to have Node.js and npm installed on your machine. If you don't have them installed, you can install them from [here](https://nodejs.org/en/download/).
+
+To install Emailnator Unofficial CLI, run the following command:
 
 ```bash
 sudo npm install -g emailnator
 ```
 
-Alternatively, you can install Emailnator Unofficial CLI from source:
+Alternatively, you can install the source code from Github:
 
 ```bash
 git clone https://github.com/ethicalhcb/emailnator-cli.git
@@ -26,13 +28,14 @@ sudo npm install -g .
 ```
 
 ## 📢 After installation
-After installing Emailnator Unofficial CLI, you need to install the required dependencies. To do so, run the following command:
+> After installing, you need to install the required dependencies !
+
+Run the following command:
 ```bash
 emailnator install
 ```
 
 ## 👨‍💻 Usage
-Here's how to use Emailnator Unofficial CLI:
 
 > To use the CLI, run one of the following commands:
 
@@ -54,10 +57,10 @@ Here's how to use Emailnator Unofficial CLI:
 - `emailnator i <email>`: Alias for `inbox`.
 - `emailnator m <email> <id>`: Alias for `message`.
 
-## ⚠️ Known errors
-> Error: Could not find Chrome (ver. xxx.x.xxxx.xxx). This can occur if either
+## ⚠️ Known Issues
+Error: Could not find Chrome (ver. xxx.x.xxxx.xxx). This can occur if either
 
-This error occurs when you don't have Chrome installed on your machine. To fix this error, install Chrome and run the following command:
+> This error occurs when you don't have chrome for puppeteer installed on your machine. To fix this error run the following command:
 
 ```bash
 emailnator install
