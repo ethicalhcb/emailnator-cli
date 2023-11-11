@@ -7,6 +7,7 @@ import { generateEmail } from "./bin/generate.js";
 import { inbox } from "./bin/inbox.js";
 import { message } from "./bin/message.js";
 import { clearEmailsToDatabase } from "./bin/clear.js";
+import { checkPuppeteerInstallation } from "./bin/install.js";
 import figlet from "figlet";
 import fs from "fs";
 
@@ -28,6 +29,22 @@ program.on("--help", () => {
   console.log(figlet.textSync("Emailnator CLI", "Standard"));
   console.log(`Version: ${program.version()}`);
 });
+
+program
+  .command("install")
+  .alias("i")
+  .description("install puppeteer requirements")
+  .action(() => {
+    const spinner = ora("Install chrome puppeteer requirements.").start();
+    checkPuppeteerInstallation()
+      .then(() => {
+        spinner.succeed(`Successfully install puppeteer requirements.`);
+      })
+      .catch((err) => {
+        spinner.fail(err.message);
+      });
+  });
+
 program
   .command("generate-email")
   .alias("ge")

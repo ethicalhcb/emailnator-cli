@@ -1,6 +1,6 @@
 {
   "name": "emailnator",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "generate gmail email with emailnator.com",
   "main": "index.js",
   "bin": {
@@ -27,7 +27,6 @@
     "figlet": "^1.7.0",
     "ora": "^7.0.1",
     "puppeteer": "^21.5.1",
-    "puppeteer-core": "^21.5.1",
     "sqlite3": "^5.1.6"
   }
 }

@@ -50,7 +50,8 @@ export async function generateEmail() {
         request.abort();
       } else {
         request.continue();
-      }generateEmail
+      }
+      generateEmail;
     });
 
     page.on("dialog", async (dialog) => {
