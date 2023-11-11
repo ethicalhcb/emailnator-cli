@@ -12,7 +12,9 @@ import fs from "fs";
 
 // get dirname and filename for version
 import path from "path";
-const __dirname = fs.realpathSync(process.cwd());
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const program = new Command();
 program.name("emailnator");
