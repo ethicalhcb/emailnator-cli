@@ -10,6 +10,9 @@ then
         sudo apt install jq
 fi
 
+# Function to compare versions
+function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
+
 # Check if an argument has been passed
 if [ $# -eq 0 ]
     then
@@ -20,8 +23,11 @@ fi
 # Define the version
 VERSION=$1
 
+# Read the current version from version.json
+CURRENT_VERSION=$(jq -r '.version' version.json)
+
 # Check if the $VERSION is > to in .version && package.json
-if [[ "$(cat version.json)" < "$VERSION" ]]; then
+if version_gt $VERSION $CURRENT_VERSION; then
     # Ask for confirmation before modifying files
     read -p "Update the current version to $VERSION?. Do you want to continue? (y/n) " choice
     case "$choice" in
@@ -29,8 +35,8 @@ if [[ "$(cat version.json)" < "$VERSION" ]]; then
             # Modify the package.json file
             jq '.version = "'$VERSION'"' package.json > temp.json && mv temp.json package.json
 
-            # Modify the .version file
-            echo $VERSION > version.json
+            # Modify the version.json file
+            jq '.version = "'$VERSION'"' version.json > temp.json && mv temp.json version.json
 
             # Display modifications
             echo "Version changed to $VERSION in package.json and version.json"

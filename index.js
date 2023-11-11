@@ -11,15 +11,15 @@ import figlet from "figlet";
 import fs from "fs";
 
 // get dirname and filename for version
-import path from "path";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const program = new Command();
 program.name("emailnator");
-const versionFilePath = path.resolve(__dirname, "version.json");
-const version = fs.readFileSync(versionFilePath, "utf8").trim();
+const versionFilePath = join(__dirname, "version.json");
+const version = JSON.parse(fs.readFileSync(versionFilePath, "utf8")).version;
+
 program.version(version);
 program.description("A CLI to generate email addresses and read emails");
 console.log("Emailnator Unofficial CLI " + program.version() + "\n");
