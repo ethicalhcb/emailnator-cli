@@ -16,7 +16,7 @@ const __dirname = fs.realpathSync(process.cwd());
 
 const program = new Command();
 program.name("emailnator");
-const versionFilePath = path.resolve(__dirname, ".version");
+const versionFilePath = path.resolve(__dirname, "version.json");
 const version = fs.readFileSync(versionFilePath, "utf8").trim();
 program.version(version);
 program.description("A CLI to generate email addresses and read emails");
