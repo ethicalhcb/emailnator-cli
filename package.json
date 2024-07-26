@@ -26,7 +26,10 @@
     "commander": "^11.1.0",
     "figlet": "^1.7.0",
     "ora": "^7.0.1",
-    "puppeteer": "^21.5.1",
-    "sqlite3": "^5.1.6"
+    "puppeteer": "^22.14.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "sqlite3": "^5.1.6",
+    "user-agents": "^1.1.277"
   }
 }

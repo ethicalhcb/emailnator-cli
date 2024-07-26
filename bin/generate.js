@@ -1,8 +1,14 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import sqlite3 from "sqlite3";
+import UserAgent from "user-agents";
+
+const userAgent = new UserAgent({ deviceCategory: "desktop" });
 
 const sleep = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 const url = "https://www.emailnator.com";
+
+puppeteer.use(StealthPlugin());
 
 /**
  * save email to sql database
@@ -51,12 +57,13 @@ export async function generateEmail() {
       } else {
         request.continue();
       }
-      generateEmail;
     });
 
     page.on("dialog", async (dialog) => {
       await dialog.dismiss();
     });
+
+    await page.setUserAgent(userAgent.toString());
 
     await page.evaluateOnNewDocument(() => {
       Object.defineProperty(navigator, "webdriver", {
