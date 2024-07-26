@@ -12,7 +12,10 @@ const sleep = (ms = 500) => new Promise((r) => setTimeout(r, ms));
 
 export async function inbox(email) {
   try {
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
     const page = await browser.newPage();
 
     await page.setUserAgent(userAgent.toString());
