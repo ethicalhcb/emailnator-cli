@@ -15,12 +15,21 @@ export async function message(id, email) {
   await page.setUserAgent(userAgent.toString());
 
   await Promise.all([
+    page.setUserAgent(userAgent.toString()),
     page.setCacheEnabled(false),
     page.setOfflineMode(false),
     page.setBypassServiceWorker(true),
     page.setRequestInterception(true),
     page.evaluateOnNewDocument(() => {
       Object.defineProperty(navigator, "webdriver", { get: () => false });
+    }),
+    page.on("request", (request) => {
+      const resourceType = request.resourceType();
+      if (["image", "stylesheet", "font", "medias"].includes(resourceType)) {
+        request.abort();
+      } else {
+        request.continue();
+      }
     }),
   ]);
 

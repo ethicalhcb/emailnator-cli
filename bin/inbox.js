@@ -18,20 +18,24 @@ export async function inbox(email) {
 
     const page = await browser.newPage();
 
-    await page.setUserAgent(userAgent.toString());
-
-    await page.setRequestInterception(true);
-    page.on("request", (request) => {
-      if (
-        ["image", "stylesheet", "font", "medias"].includes(
-          request.resourceType()
-        )
-      ) {
-        request.abort();
-      } else {
-        request.continue();
-      }
-    });
+    await Promise.all([
+      page.setUserAgent(userAgent.toString()),
+      page.setCacheEnabled(false),
+      page.setOfflineMode(false),
+      page.setBypassServiceWorker(true),
+      page.setRequestInterception(true),
+      page.evaluateOnNewDocument(() => {
+        Object.defineProperty(navigator, "webdriver", { get: () => false });
+      }),
+      page.on("request", (request) => {
+        const resourceType = request.resourceType();
+        if (["image", "stylesheet", "font", "medias"].includes(resourceType)) {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      }),
+    ]);
 
     page.on("dialog", async (dialog) => {
       await dialog.dismiss();

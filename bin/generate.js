@@ -44,22 +44,24 @@ export async function generateEmail() {
     });
     const page = await browser.newPage();
 
-    await page.setCacheEnabled(false);
-    await page.setOfflineMode(false);
-    await page.setBypassServiceWorker(true);
-
-    await page.setRequestInterception(true);
-    page.on("request", (request) => {
-      if (
-        ["image", "stylesheet", "font", "medias"].indexOf(
-          request.resourceType()
-        ) !== -1
-      ) {
-        request.abort();
-      } else {
-        request.continue();
-      }
-    });
+    await Promise.all([
+      page.setUserAgent(userAgent.toString()),
+      page.setCacheEnabled(false),
+      page.setOfflineMode(false),
+      page.setBypassServiceWorker(true),
+      page.setRequestInterception(true),
+      page.evaluateOnNewDocument(() => {
+        Object.defineProperty(navigator, "webdriver", { get: () => false });
+      }),
+      page.on("request", (request) => {
+        const resourceType = request.resourceType();
+        if (["image", "stylesheet", "font", "medias"].includes(resourceType)) {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      }),
+    ]);
 
     page.on("dialog", async (dialog) => {
       await dialog.dismiss();
