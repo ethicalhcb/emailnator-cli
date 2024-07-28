@@ -1,5 +1,7 @@
 # Emailnator Unofficial CLI
 
+help me here ❤️ : https://patreon.com/benoitpetit
+
 <p align="center">
     <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="300">
 </p>
