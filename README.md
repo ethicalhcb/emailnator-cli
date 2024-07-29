@@ -1,7 +1,5 @@
 # Emailnator Unofficial CLI
 
-help me here ❤️ : https://patreon.com/benoitpetit
-
 <p align="center">
     <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="800">
 </p>
@@ -17,7 +15,7 @@ To install, you need to have Node.js and npm installed on your machine. If you d
 To install Emailnator Unofficial CLI, run the following command:
 
 ```bash
-sudo npm install -g emailnator
+sudo npm install -g emailnator-cli
 ```
 
 Alternatively, you can install the source code from Github:
@@ -77,3 +75,4 @@ emailnator install
 ## License
 
 Emailnator Unofficial CLI is licensed under the MIT license.
+help me here ❤️ : https://patreon.com/benoitpetit
