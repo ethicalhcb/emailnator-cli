@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 import { Command } from "commander";
 import ora from "ora";
 import { listEmailsToDatabase } from "./bin/list.js";
@@ -17,13 +16,13 @@ import { dirname, join } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const program = new Command();
-program.name("emailnator");
+program.name("emailnator-cli");
 const versionFilePath = join(__dirname, "version.json");
 const version = JSON.parse(fs.readFileSync(versionFilePath, "utf8")).version;
 
 program.version(version);
 program.description("A CLI to generate email addresses and read emails");
-console.log("Emailnator Unofficial CLI " + program.version() + "\n");
+console.log("Emailnator CLI Unofficial " + program.version() + "\n");
 
 program.on("--help", () => {
   console.log(figlet.textSync("Emailnator CLI", "Standard"));
@@ -32,8 +31,7 @@ program.on("--help", () => {
 
 program
   .command("install")
-  .alias("i")
-  .description("install puppeteer requirements")
+  .description("install requirements")
   .action(() => {
     const spinner = ora("Install chrome puppeteer requirements.").start();
     checkPuppeteerInstallation()
@@ -144,40 +142,45 @@ program
   .description("Show the inbox for a given email address")
   .action((email) => {
     const spinner = ora(`Loading inbox for ${email}...`).start();
-    inbox(email)
-      .then((value) => {
-        console.log("inbox to " + email);
+    if (!email.includes("@")) {
+      spinner.fail("Invalid email address");
+      return;
+    } else {
+      inbox(email)
+        .then((value) => {
+          console.log("inbox to " + email);
 
-        const messages = value.map((message) => {
-          if (!message[3].startsWith("/inbox/")) {
-            return null;
+          const messages = value.map((message) => {
+            if (!message[3].startsWith("/inbox/")) {
+              return null;
+            }
+            return {
+              from: message[0],
+              object: message[1],
+              time: message[2],
+              link: "https://emailnator.com/" + message[3],
+              id: message[3].substring(
+                message[3].indexOf("@gmail.com/") + 11,
+                message[3].length
+              ),
+            };
+          });
+
+          // si il y a null dans le tableau, on le supprime
+          for (let i = 0; i < messages.length; i++) {
+            if (messages[i] === null) {
+              messages.splice(i, 1);
+            }
           }
-          return {
-            from: message[0],
-            object: message[1],
-            time: message[2],
-            link: "https://emailnator.com/" + message[3],
-            id: message[3].substring(
-              message[3].indexOf("@gmail.com/") + 11,
-              message[3].length
-            ),
-          };
+
+          spinner.succeed(
+            `Inbox for ${email}:\n${JSON.stringify(messages, null, 2)}`
+          );
+        })
+        .catch((err) => {
+          spinner.fail(err.message);
         });
-
-        // si il y a null dans le tableau, on le supprime
-        for (let i = 0; i < messages.length; i++) {
-          if (messages[i] === null) {
-            messages.splice(i, 1);
-          }
-        }
-
-        spinner.succeed(
-          `Inbox for ${email}:\n${JSON.stringify(messages, null, 2)}`
-        );
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
+    }
   });
 
 program

@@ -1,7 +1,7 @@
 # Emailnator Unofficial CLI
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="300">
+    <img src="./logo.png" alt="Logo" width="700">
 </p>
 
 
@@ -49,7 +49,6 @@ emailnator install
 
 > You can also use the following aliases for the commands:
 
-- `emailnator i`: Alias for `install`.
 - `emailnator ge`: Alias for `generate-email`.
 - `emailnator gem <number>`: Alias for `generate-email-multi`.
 - `emailnator l`: Alias for `list`.

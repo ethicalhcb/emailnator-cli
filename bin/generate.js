@@ -18,7 +18,7 @@ export async function saveEmailToDatabase(email) {
   const db = new sqlite3.Database("emails.db");
   const date = new Date().toISOString();
   db.run(
-    "CREATE TABLE IF NOT EXISTS emails (email TEXT, created_at TEXT)",
+    "CREATE TABLE IF NOT EXISTS emails (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, created_at TEXT)",
     function (err) {
       if (err) {
         console.error(err.message);
