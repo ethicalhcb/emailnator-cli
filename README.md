@@ -1,5 +1,7 @@
 # Emailnator Unofficial CLI
 
+help me here ❤️ : https://patreon.com/benoitpetit
+
 <p align="center">
     <img src="./logo.png" alt="Logo" width="700">
 </p>
