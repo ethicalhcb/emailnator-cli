@@ -1,6 +1,6 @@
 {
   "name": "emailnator-cli",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "generate gmail email with emailnator.com",
   "main": "index.js",
   "bin": {

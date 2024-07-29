@@ -113,8 +113,12 @@ program
           spinner.fail("No email addresses generated yet.");
           return;
         }
-        const emailList = emails.map((email) => email.email);
-        spinner.succeed(`Email addresses list :\n${emailList.join("\n")}`);
+        const emailListWithLinks = emails.map((email) => {
+          return `${email.id} - ${email.email} - https://emailnator.com/inbox/${email.email}`;
+        });
+        spinner.succeed(
+          `Email addresses list:\n${emailListWithLinks.join("\n")}`
+        );
       })
       .catch((err) => {
         spinner.fail(err.message);

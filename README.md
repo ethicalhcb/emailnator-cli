@@ -3,13 +3,12 @@
 help me here ❤️ : https://patreon.com/benoitpetit
 
 <p align="center">
-    <img src="./logo.png" alt="Logo" width="700">
+    <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="700">
 </p>
-
 
 Emailnator Unofficial CLI is a command-line interface for generating email addresses and reading emails. Please use it responsibly and ethically.
 
->**Please note that I am not responsible for the usage of this program. Use it responsibly and ethically.**
+> **Please note that I am not responsible for the usage of this program. Use it responsibly and ethically.**
 
 ## 📦 Installation
 
@@ -30,9 +29,11 @@ sudo npm install -g .
 ```
 
 ## 📢 After installation
+
 > After installing, you need to install the required dependencies !
 
 Run the following command:
+
 ```bash
 emailnator install
 ```
@@ -59,6 +60,7 @@ emailnator install
 - `emailnator m <email> <id>`: Alias for `message`.
 
 ## ⚠️ Known Issues
+
 Error: Could not find Chrome (ver. xxx.x.xxxx.xxx). This can occur if either
 
 > This error occurs when you don't have chrome for puppeteer installed on your machine. To fix this error run the following command:
@@ -68,8 +70,10 @@ emailnator install
 ```
 
 ## 🔗 Links:
+
 - NPM : [https://www.npmjs.com/package/emailnator](https://www.npmjs.com/package/emailnator)
 - Github : [https://github.com/ethicalhcb/emailnator-cli/](https://github.com/ethicalhcb/emailnator-cli/)
 
 ## License
+
 Emailnator Unofficial CLI is licensed under the MIT license.
