@@ -1,7 +1,7 @@
 {
   "name": "emailnator-cli",
-  "version": "1.2.7",
-  "description": "generate gmail email with emailnator.com",
+  "version": "1.2.8",
+  "description": "Emailnator Unofficial CLI is a command-line interface for generating email addresses and reading emails",
   "main": "index.js",
   "bin": {
     "emailnator": "./index.js"
@@ -12,11 +12,8 @@
   },
   "type": "module",
   "keywords": [
-    "email",
     "emailnator",
     "emailnator-cli",
-    "gmail",
-    "emailnator.com",
     "cli"
   ],
   "author": "ethicalhcb",
