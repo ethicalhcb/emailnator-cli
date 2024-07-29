@@ -3,7 +3,7 @@
 help me here ❤️ : https://patreon.com/benoitpetit
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ethicalhcb/emailnator-cli/master/logo.png" alt="Logo" width="700">
+    <img src="./logo.png" alt="Logo" width="700">
 </p>
 
 Emailnator Unofficial CLI is a command-line interface for generating email addresses and reading emails. Please use it responsibly and ethically.
