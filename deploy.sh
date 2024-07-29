@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is used to deploy the package to GitHub and NPM registry
+# This script is used to deploy the package to GitHub and the NPM registry
 # codingben bs.7416@proton.me
 
 set -e
@@ -7,7 +7,7 @@ set -e
 # Check if jq is installed, otherwise install it
 if ! command -v jq &> /dev/null
 then
-        sudo apt install jq
+    sudo apt install jq
 fi
 
 # Function to compare versions
@@ -23,10 +23,10 @@ fi
 # Define the version
 VERSION=$1
 
-# Read the current version from version.json
-CURRENT_VERSION=$(jq -r '.version' version.json)
+# Read the current version from package.json
+CURRENT_VERSION=$(jq -r '.version' package.json)
 
-# Check if the $VERSION is > to in .version && package.json
+# Check if the $VERSION is > than the one in package.json
 if version_gt $VERSION $CURRENT_VERSION; then
     # Ask for confirmation before modifying files
     read -p "Update the current version to $VERSION?. Do you want to continue? (y/n) " choice
@@ -35,14 +35,11 @@ if version_gt $VERSION $CURRENT_VERSION; then
             # Modify the package.json file
             jq '.version = "'$VERSION'"' package.json > temp.json && mv temp.json package.json
 
-            # Modify the version.json file
-            jq '.version = "'$VERSION'"' version.json > temp.json && mv temp.json version.json
-
             # Display modifications
-            echo "Version changed to $VERSION in package.json and version.json"
+            echo "Version changed to $VERSION in package.json"
 
             # Ask for confirmation before executing modifications
-            read -p "Do you want continu deployment to GitHub and NPM ? (y/n) " choice
+            read -p "Do you want to continue deployment to GitHub and NPM? (y/n) " choice
             case "$choice" in
                 y|Y )
                     # Execute modifications

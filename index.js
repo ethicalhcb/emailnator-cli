@@ -1,206 +1,231 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import ora from "ora";
+import figlet from "figlet";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
 import { listEmailsToDatabase } from "./bin/list.js";
 import { generateEmail } from "./bin/generate.js";
 import { inbox } from "./bin/inbox.js";
 import { message } from "./bin/message.js";
 import { clearEmailsToDatabase } from "./bin/clear.js";
 import { checkPuppeteerInstallation } from "./bin/install.js";
-import figlet from "figlet";
-import fs from "fs";
 
-// get dirname and filename for version
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const program = new Command();
-program.name("emailnator-cli");
-const versionFilePath = join(__dirname, "version.json");
+const versionFilePath = join(__dirname, "package.json");
 const version = JSON.parse(fs.readFileSync(versionFilePath, "utf8")).version;
 
-program.version(version);
-program.description("A CLI to generate email addresses and read emails");
-console.log("Emailnator CLI Unofficial " + program.version() + "\n");
+const program = new Command();
 
-program.on("--help", () => {
-  console.log(figlet.textSync("Emailnator CLI", "Standard"));
-  console.log(`Version: ${program.version()}`);
-});
+function setupProgram() {
+  program
+    .name("emailnator-cli")
+    .version(version)
+    .description("A CLI to generate email addresses and read emails");
 
-program
-  .command("install")
-  .description("install requirements")
-  .action(() => {
-    const spinner = ora("Install chrome puppeteer requirements.").start();
-    checkPuppeteerInstallation()
-      .then(() => {
-        spinner.succeed(`Successfully install puppeteer requirements.`);
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
+  console.log(`Emailnator CLI Unofficial ${program.version()}\n`);
+
+  program.on("--help", () => {
+    console.log(figlet.textSync("Emailnator CLI", "Standard"));
+    console.log(`Version: ${program.version()}`);
   });
+}
 
-program
-  .command("generate-email")
-  .alias("ge")
-  .description("Generate a new email address")
-  .action(() => {
-    const spinner = ora("Generating email address...").start();
-    generateEmail()
-      .then((email) => {
-        spinner.succeed(`Email address generated: ${email}`);
-        spinner.warn(
-          "The emails from this address are deleted every 24 hours!"
-        );
-        spinner.succeed("link: " + "https://emailnator.com/inbox/" + email);
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
-  });
+function createSpinner(text) {
+  return ora(text).start();
+}
 
-program
-  .command("generate-email-multi <number>")
-  .alias("gem")
-  .description("Generate multiple email addresses")
-  .action((number) => {
-    const num = parseInt(number, 10);
-    if (isNaN(num)) {
-      console.error("Invalid number");
-      return;
-    }
-    const spinner = ora(`Generating ${num} emails addresses...`).start();
-    const promises = [];
-    for (let i = 0; i < num; i++) {
-      promises.push(generateEmail());
-    }
-    Promise.all(promises)
-      .then((emails) => {
-        spinner.succeed(`Email addresses generated:\n${emails.join("\n")}`);
-        console.log("\n");
-        spinner.warn(
-          "The emails from these addresses are deleted every 24 hours!\n"
-        );
-        spinner.succeed(
-          "links:\n" +
-            emails
-              .map((email) => "https://emailnator.com/inbox/" + email)
-              .join("\n")
-        );
-        // ajoute un log pour expliquer comment voir les emails d'une adresse dans le terminal
-        console.log(
-          "\nTo see the emails from an addresses, use the command 'emailnator inbox <email>'"
-        );
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
-  });
+function handleSpinnerResult(spinner, successMessage) {
+  return (result) => {
+    spinner.succeed(successMessage(result));
+    return result;
+  };
+}
 
-program
-  .command("list")
-  .alias("l")
-  .description("List all email addresses generated")
-  .action(() => {
-    const spinner = ora("Loading email addresses...").start();
-    listEmailsToDatabase()
-      .then((value) => {
-        const emails = value;
-        if (emails.length === 0) {
-          spinner.fail("No email addresses generated yet.");
-          return;
-        }
-        const emailListWithLinks = emails.map((email) => {
-          return `${email.id} - ${email.email} - https://emailnator.com/inbox/${email.email}`;
-        });
-        spinner.succeed(
-          `Email addresses list:\n${emailListWithLinks.join("\n")}`
-        );
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
-  });
+function handleSpinnerError(spinner) {
+  return (error) => {
+    spinner.fail(error.message);
+    throw error;
+  };
+}
 
-program
-  .command("clear")
-  .alias("c")
-  .description("Clear all email addresses generated")
-  .action(() => {
-    const spinner = ora("Clearing email addresses...").start();
-    clearEmailsToDatabase()
-      .then((value) => {
-        spinner.succeed(`Email addresses cleared`);
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
-  });
+function addInstallCommand() {
+  program
+    .command("install")
+    .description("install requirements")
+    .action(() => {
+      const spinner = createSpinner(
+        "Installing chrome puppeteer requirements."
+      );
+      checkPuppeteerInstallation()
+        .then(
+          handleSpinnerResult(
+            spinner,
+            () => "Successfully installed puppeteer requirements."
+          )
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
 
-program
-  .command("inbox <email>")
-  .alias("i")
-  .description("Show the inbox for a given email address")
-  .action((email) => {
-    const spinner = ora(`Loading inbox for ${email}...`).start();
-    if (!email.includes("@")) {
-      spinner.fail("Invalid email address");
-      return;
-    } else {
+function addGenerateEmailCommand() {
+  program
+    .command("generate-email")
+    .alias("ge")
+    .description("Generate a new email address")
+    .action(() => {
+      const spinner = createSpinner("Generating email address...");
+      generateEmail()
+        .then(
+          handleSpinnerResult(spinner, (email) => {
+            spinner.warn(
+              "The emails from this address are deleted every 24 hours!"
+            );
+            spinner.succeed(`link: https://emailnator.com/inbox/${email}`);
+            return `Email address generated: ${email}`;
+          })
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
+
+function addGenerateMultipleEmailsCommand() {
+  program
+    .command("generate-email-multi <number>")
+    .alias("gem")
+    .description("Generate multiple email addresses")
+    .action((number) => {
+      const num = parseInt(number, 10);
+      if (isNaN(num)) {
+        console.error("Invalid number");
+        return;
+      }
+      const spinner = createSpinner(`Generating ${num} emails addresses...`);
+      Promise.all(
+        Array(num)
+          .fill()
+          .map(() => generateEmail())
+      )
+        .then(
+          handleSpinnerResult(spinner, (emails) => {
+            spinner.warn(
+              "The emails from these addresses are deleted every 24 hours!\n"
+            );
+            spinner.succeed(
+              `links:\n${emails
+                .map((email) => `https://emailnator.com/inbox/${email}`)
+                .join("\n")}`
+            );
+            console.log(
+              "\nTo see the emails from an address, use the command 'emailnator inbox <email>'"
+            );
+            return `Email addresses generated:\n${emails.join("\n")}`;
+          })
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
+
+function addListCommand() {
+  program
+    .command("list")
+    .alias("l")
+    .description("List all email addresses generated")
+    .action(() => {
+      const spinner = createSpinner("Loading email addresses...");
+      listEmailsToDatabase()
+        .then(
+          handleSpinnerResult(spinner, (emails) => {
+            if (emails.length === 0) return "No email addresses generated yet.";
+            const emailListWithLinks = emails.map(
+              (email) =>
+                `${email.id} - ${email.email} - https://emailnator.com/inbox/${email.email}`
+            );
+            return `Email addresses list:\n${emailListWithLinks.join("\n")}`;
+          })
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
+
+function addClearCommand() {
+  program
+    .command("clear")
+    .alias("c")
+    .description("Clear all email addresses generated")
+    .action(() => {
+      const spinner = createSpinner("Clearing email addresses...");
+      clearEmailsToDatabase()
+        .then(handleSpinnerResult(spinner, () => "Email addresses cleared"))
+        .catch(handleSpinnerError(spinner));
+    });
+}
+
+function addInboxCommand() {
+  program
+    .command("inbox <email>")
+    .alias("i")
+    .description("Show the inbox for a given email address")
+    .action((email) => {
+      if (!email.includes("@")) {
+        console.error("Invalid email address");
+        return;
+      }
+      const spinner = createSpinner(`Loading inbox for ${email}...`);
       inbox(email)
-        .then((value) => {
-          console.log("inbox to " + email);
+        .then(
+          handleSpinnerResult(spinner, (value) => {
+            const messages = value
+              .map((message) => {
+                if (!message[3].startsWith("/inbox/")) return null;
+                return {
+                  from: message[0],
+                  object: message[1],
+                  time: message[2],
+                  link: `https://emailnator.com/${message[3]}`,
+                  id: message[3].substring(
+                    message[3].indexOf("@gmail.com/") + 11
+                  ),
+                };
+              })
+              .filter((message) => message !== null);
+            return `Inbox for ${email}:\n${JSON.stringify(messages, null, 2)}`;
+          })
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
 
-          const messages = value.map((message) => {
-            if (!message[3].startsWith("/inbox/")) {
-              return null;
-            }
-            return {
-              from: message[0],
-              object: message[1],
-              time: message[2],
-              link: "https://emailnator.com/" + message[3],
-              id: message[3].substring(
-                message[3].indexOf("@gmail.com/") + 11,
-                message[3].length
-              ),
-            };
-          });
+function addMessageCommand() {
+  program
+    .command("message <email> <id>")
+    .alias("m")
+    .description("show the message for a given email address and id")
+    .action((email, id) => {
+      const spinner = createSpinner(`Loading message ${id} for ${email}...`);
+      message(id, email)
+        .then(
+          handleSpinnerResult(
+            spinner,
+            (value) => `Message ${id} for ${email}:\n${value.join("")}`
+          )
+        )
+        .catch(handleSpinnerError(spinner));
+    });
+}
 
-          // si il y a null dans le tableau, on le supprime
-          for (let i = 0; i < messages.length; i++) {
-            if (messages[i] === null) {
-              messages.splice(i, 1);
-            }
-          }
+function main() {
+  setupProgram();
+  addInstallCommand();
+  addGenerateEmailCommand();
+  addGenerateMultipleEmailsCommand();
+  addListCommand();
+  addClearCommand();
+  addInboxCommand();
+  addMessageCommand();
+  program.parse(process.argv);
+}
 
-          spinner.succeed(
-            `Inbox for ${email}:\n${JSON.stringify(messages, null, 2)}`
-          );
-        })
-        .catch((err) => {
-          spinner.fail(err.message);
-        });
-    }
-  });
-
-program
-  .command("message <email> <id>")
-  .alias("m")
-  .description("show the message for a given email address and id")
-  .action((email, id) => {
-    const spinner = ora(`Loading message ${id} for ${email}...`).start();
-    message(id, email)
-      .then((value) => {
-        const html = value.join("");
-        spinner.succeed(`Message ${id} for ${email}:\n${html}`);
-      })
-      .catch((err) => {
-        spinner.fail(err.message);
-      });
-  });
-
-program.parse(process.argv);
+main();

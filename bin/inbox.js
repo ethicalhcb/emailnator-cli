@@ -1,64 +1,39 @@
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import UserAgent from "user-agents";
-
-const userAgent = new UserAgent({ deviceCategory: "desktop" });
+import {
+  sleep,
+  randomDelay,
+  setupPage,
+  handleCookieConsent,
+  simulateScrolling,
+  randomMouseMovements,
+  config,
+} from "./utils.js";
 
 puppeteer.use(StealthPlugin());
 
-const url = "https://www.emailnator.com";
-
-const sleep = (ms = 500) => new Promise((r) => setTimeout(r, ms));
-
 export async function inbox(email) {
   try {
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+    const browser = await puppeteer.launch(config.browserLaunchOptions);
+    const page = await setupPage(browser);
 
-    const page = await browser.newPage();
+    await page.goto(config.url + "/inbox#" + email);
 
-    await Promise.all([
-      page.setUserAgent(userAgent.toString()),
-      page.setCacheEnabled(false),
-      page.setOfflineMode(false),
-      page.setBypassServiceWorker(true),
-      page.setRequestInterception(true),
-      page.evaluateOnNewDocument(() => {
-        Object.defineProperty(navigator, "webdriver", { get: () => false });
-      }),
-      page.on("request", (request) => {
-        const resourceType = request.resourceType();
-        if (["image", "stylesheet", "font", "medias"].includes(resourceType)) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      }),
-    ]);
+    // Random delay before handling cookie consent
+    await sleep(randomDelay(1000, 3000));
+    await handleCookieConsent(page);
 
-    page.on("dialog", async (dialog) => {
-      await dialog.dismiss();
-    });
+    // Simulate human-like behavior
+    await simulateScrolling(page);
+    await randomMouseMovements(page, 5);
 
-    await page.evaluateOnNewDocument(() => {
-      Object.defineProperty(navigator, "webdriver", { get: () => false });
-    });
+    await page.waitForSelector(config.selectors.inboxTable, { timeout: 10000 });
 
-    await page.goto(url + "/inbox#" + email);
-
-    await page.waitForSelector(".fc-button-background");
-    await page.click(".fc-button-background");
-
-    await sleep();
-
-    await page.waitForSelector(
-      "div.mb-3.col-lg-6.col-sm-12 table.message_container"
-    );
-    const elements = await page.$$("div.mb-3.col-lg-6.col-sm-12 table");
+    const elements = await page.$$(config.selectors.inboxTableAll);
 
     const contentEmails = await Promise.all(
       elements.map(async (element) => {
+        await sleep(randomDelay(100, 300)); // Small delay between processing each element
         const content = await element.evaluate((el) => el.innerHTML);
         return content;
       })
@@ -90,6 +65,11 @@ export async function inbox(email) {
 
       result.push(tds);
     });
+
+    // Final human-like behavior before closing
+    await simulateScrolling(page);
+    await randomMouseMovements(page, 3);
+    await sleep(randomDelay(500, 1500));
 
     await page.close();
     await browser.close();
