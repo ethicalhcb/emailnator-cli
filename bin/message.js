@@ -33,15 +33,6 @@ export async function message(id, email) {
     }),
   ]);
 
-  page.on("request", (request) => {
-    const resourceType = request.resourceType();
-    if (["image", "stylesheet", "font", "medias"].includes(resourceType)) {
-      request.abort();
-    } else {
-      request.continue();
-    }
-  });
-
   page.on("dialog", async (dialog) => {
     await dialog.dismiss();
   });
