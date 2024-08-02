@@ -1,6 +1,6 @@
 {
   "name": "emailnator-cli",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "Emailnator Unofficial CLI is a command-line interface for generating email addresses and reading emails",
   "main": "index.js",
   "bin": {

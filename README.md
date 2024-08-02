@@ -75,4 +75,4 @@ emailnator install
 ## License
 
 Emailnator Unofficial CLI is licensed under the MIT license.
-help me here ❤️ : https://patreon.com/benoitpetit
+help me here ❤️ : [buymeacoffee.com/benoitpetit](https://buymeacoffee.com/benoitpetit)
