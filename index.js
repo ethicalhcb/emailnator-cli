@@ -21,15 +21,15 @@ const program = new Command();
 
 function setupProgram() {
   program
-    .name("emailnator-cli")
+    .name("emailnator")
     .version(version)
     .description("A CLI to generate email addresses and read emails");
 
-  console.log(`Emailnator CLI Unofficial ${program.version()}\n`);
+  console.log(`Emailnator CLI Unofficial | Version : ${program.version()}\n`);
 
   program.on("--help", () => {
-    console.log(figlet.textSync("Emailnator CLI", "Standard"));
-    console.log(`Version: ${program.version()}`);
+    console.log(figlet.textSync("Emailnator CLI", "Slant"));
+    console.log("https://buymeacoffee.com/benoitpetit");
   });
 }
 
@@ -74,7 +74,7 @@ function addGenerateEmailCommand() {
   program
     .command("generate-email")
     .alias("ge")
-    .description("Generate a new email address")
+    .description("generate a new email address")
     .action(() => {
       const spinner = createSpinner("Generating email address...");
       generateEmail()
@@ -95,7 +95,7 @@ function addGenerateMultipleEmailsCommand() {
   program
     .command("generate-email-multi <number>")
     .alias("gem")
-    .description("Generate multiple email addresses")
+    .description("generate multiple email addresses")
     .action((number) => {
       const num = parseInt(number, 10);
       if (isNaN(num)) {
@@ -132,7 +132,7 @@ function addListCommand() {
   program
     .command("list")
     .alias("l")
-    .description("List all email addresses generated")
+    .description("list all email addresses generated")
     .action(() => {
       const spinner = createSpinner("Loading email addresses...");
       listEmailsToDatabase()
@@ -154,7 +154,7 @@ function addClearCommand() {
   program
     .command("clear")
     .alias("c")
-    .description("Clear all email addresses generated")
+    .description("clear all email addresses generated")
     .action(() => {
       const spinner = createSpinner("Clearing email addresses...");
       clearEmailsToDatabase()
@@ -167,7 +167,7 @@ function addInboxCommand() {
   program
     .command("inbox <email>")
     .alias("i")
-    .description("Show the inbox for a given email address")
+    .description("show the inbox for a given email address")
     .action((email) => {
       if (!email.includes("@")) {
         console.error("Invalid email address");
@@ -202,7 +202,7 @@ function addMessageCommand() {
   program
     .command("message <email> <id>")
     .alias("m")
-    .description("show the message for a given email address and id")
+    .description("Show the message for a given email address and id")
     .action((email, id) => {
       const spinner = createSpinner(`Loading message ${id} for ${email}...`);
       message(id, email)
